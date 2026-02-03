@@ -14,16 +14,20 @@ Each file is processed independently with no memory retention between files.
 # ==============================================================================
 
 # Input folder containing .txt files to process
-INPUT_FOLDER = r"G:\UF_MSCM\Maters Thesis\experiments\claude_extracts\individual"
+# IMPORTANT: Replace with your actual input folder path
+INPUT_FOLDER = r"C:\path\to\your\input\folder"
 
 # Output folder for generated .md files
-OUTPUT_FOLDER = r"G:\UF_MSCM\Maters Thesis\experiments\output"
+# IMPORTANT: Replace with your desired output folder path
+OUTPUT_FOLDER = r"C:\path\to\your\output\folder"
 
 # Path to the prompt text file
-PROMPT_FILE = r"G:\UF_MSCM\Maters Thesis\experiments\Prompt.txt"
+# IMPORTANT: Replace with the path to your prompt.txt file
+PROMPT_FILE = r"C:\path\to\your\Prompt.txt"
 
-# Gemini API Key (you can also use environment variable GEMINI_API_KEY instead)
-API_KEY = "AIzaSyB7OzGDdLWBbV2whBPtDNRsqJWeRQm4V1o"
+# Gemini API Key (get from https://aistudio.google.com/apikey)
+# IMPORTANT: Replace with your API key or set GEMINI_API_KEY environment variable
+API_KEY = "your-gemini-api-key-here"
 
 # Model to use (options: gemini-2.0-flash, gemini-2.0-flash-lite, gemini-1.5-pro, gemini-1.5-flash)
 MODEL = "gemini-1.5-flash"
@@ -91,7 +95,7 @@ def process_file_with_gemini(
         contents=full_message
     )
     
-    return response.text
+    return response.text # type: ignore
 
 
 def process_all_files(
@@ -178,7 +182,7 @@ def process_all_files(
                         raise  # Non-rate-limit error, don't retry
             
             if response is None:
-                raise last_error
+                raise last_error # type: ignore
             
             # Save output
             output_path.write_text(response, encoding='utf-8')

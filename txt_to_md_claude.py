@@ -14,16 +14,20 @@ Each file is processed independently with no memory retention between files.
 # ==============================================================================
 
 # Input folder containing .txt files to process
-INPUT_FOLDER = r"G:\UF_MSCM\Maters Thesis\experiments\claude_extracts\batches"
+# IMPORTANT: Replace with your actual input folder path
+INPUT_FOLDER = r"C:\path\to\your\input\folder"
 
 # Output folder for generated .md files
-OUTPUT_FOLDER = r"G:\UF_MSCM\Maters Thesis\experiments\output"
+# IMPORTANT: Replace with your desired output folder path
+OUTPUT_FOLDER = r"C:\path\to\your\output\folder"
 
 # Path to the prompt text file
-PROMPT_FILE = r"G:\UF_MSCM\Maters Thesis\experiments\Prompt.txt"
+# IMPORTANT: Replace with the path to your prompt.txt file
+PROMPT_FILE = r"C:\path\to\your\Prompt.txt"
 
 # Claude API Key (get from https://console.anthropic.com/)
-API_KEY = "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"
+# IMPORTANT: Replace with your API key or set ANTHROPIC_API_KEY environment variable
+API_KEY = "your-anthropic-api-key-here"
 
 # Model to use:
 # claude-sonnet-4-20250514      - Latest Sonnet, 200K context, balanced speed/quality
@@ -220,7 +224,7 @@ def process_all_files(
                         raise
             
             if response is None:
-                raise last_error
+                raise last_error # type: ignore
             
             # Save output
             output_path.write_text(response, encoding='utf-8')

@@ -5,14 +5,20 @@ OCIS Literature Extractor for Claude
 Extracts text from PDFs and prepares them for efficient upload to Claude.
 
 Usage:
-    python extract_papers_for_claude.py /path/to/zotero/pdfs
+    Option 1 - Edit configuration in file:
+        1. Edit INPUT_FOLDER, OUTPUT_FOLDER, and BATCH_SIZE at top of this file
+        2. Run: python pdf_to_text_batch.py
+
+    Option 2 - Use command-line arguments:
+        python pdf_to_text_batch.py /path/to/zotero/pdfs
+        python pdf_to_text_batch.py /path/to/pdfs /path/to/output
 
 Requirements:
     pip install pymupdf
 
 Output:
     - Individual .txt files for each PDF
-    - Batched files (10 papers each) ready for upload
+    - Batched files (batch_size papers each) ready for upload
     - A manifest listing all processed papers
 """
 
@@ -27,6 +33,22 @@ try:
 except ImportError:
     print("ERROR: PyMuPDF not installed. Run: pip install pymupdf")
     sys.exit(1)
+
+
+# ============================================================
+# CONFIGURATION - Edit these values as needed
+# ============================================================
+
+# Input folder containing PDF files (can be overridden by command-line argument)
+INPUT_FOLDER = r"C:\path\to\your\pdfs"
+
+# Output folder for extracted text files (None = creates 'claude_extracts' in input folder)
+OUTPUT_FOLDER = None  # or set to: r"C:\path\to\output"
+
+# Number of papers per batch file
+BATCH_SIZE = 5
+
+# ============================================================
 
 
 def clean_text(text):
@@ -46,7 +68,7 @@ def extract_pdf_text(pdf_path):
         doc = fitz.open(pdf_path)
         text_parts = []
         
-        for page_num, page in enumerate(doc, 1):
+        for page_num, page in enumerate(doc, 1): # type: ignore
             page_text = page.get_text()
             if page_text.strip():
                 text_parts.append(f"[Page {page_num}]\n{page_text}")
@@ -253,14 +275,18 @@ Batches Created: {batch_num - 1}
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(__doc__)
-        print("\nExample:")
-        print("  python extract_papers_for_claude.py ~/Zotero/storage/my_collection")
-        print("  python extract_papers_for_claude.py ./papers ./output")
-        sys.exit(1)
-    
-    input_folder = sys.argv[1]
-    output_folder = sys.argv[2] if len(sys.argv) > 2 else None
-    
-    process_folder(input_folder, output_folder)
+    # Use command-line arguments if provided, otherwise use config values
+    if len(sys.argv) >= 2:
+        input_folder = sys.argv[1]
+        output_folder = sys.argv[2] if len(sys.argv) > 2 else OUTPUT_FOLDER
+    else:
+        # Use configuration values from top of file
+        input_folder = INPUT_FOLDER
+        output_folder = OUTPUT_FOLDER
+        print("Using configuration from file:")
+        print(f"  Input:  {input_folder}")
+        print(f"  Output: {output_folder if output_folder else '(auto-create in input folder)'}")
+        print(f"  Batch size: {BATCH_SIZE}")
+        print()
+
+    process_folder(input_folder, output_folder, batch_size=BATCH_SIZE)
